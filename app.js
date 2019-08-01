@@ -7,17 +7,19 @@ const generate_png = async (url) => {
   console.log('gereratepng', {url});
   const browser = await puppeteer.launch({devtools:false});
   const page = await browser.newPage();
-  const format = {
-    //format: 'A4',
-    width: "1024px", height: "800",
-    printBackground: true,
-    margin: {
-      top:"30px", right:"30px", bottom:"30px", left:"30px"
-    }
-  };
-  await page.goto(url, {waitUntil: ["load", "networkidle2"]});
-  const buffer = await page.screenshot(format);
 
+  // most common screen sizes
+  // 1366×768 – 29.25%
+  // 1920×1080 – 17.34%
+  // 1440×900 – 7.32%
+  // 1600×900 – 5.72%
+  // 1280×800 – 5.27%
+  // 1280×1024 – 4.51%
+
+  const viewport = { width: 1366, height: 768 };
+  await page.goto(url, {waitUntil: ["load", "networkidle2"]});
+  await page.setViewport(viewport);
+  const buffer = await page.screenshot(viewport);
   await browser.close();
   console.log('gereratepng result', {buffer});
   return buffer;
